@@ -1,59 +1,324 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# API de Inventario de Servidores
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+API RESTful desarrollada con Laravel para gestionar un inventario de servidores. Este proyecto implementa operaciones CRUD completas con validación robusta, tipado estricto y pruebas automatizadas.
 
-## About Laravel
+## 📋 Características
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- ✅ API RESTful con operaciones CRUD completas
+- ✅ Validación de datos con Form Requests separados
+- ✅ Tipado estricto en todo el código (strict_types=1)
+- ✅ Pruebas automatizadas con PHPUnit (100% cobertura de endpoints)
+- ✅ Respuestas JSON con códigos HTTP apropiados
+- ✅ Patrón MVC de Laravel
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🛠️ Tecnologías
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Framework**: Laravel 12.x
+- **PHP**: 8.2+
+- **Base de Datos**: SQLite (testing), compatible con MySQL/PostgreSQL
+- **Testing**: PHPUnit 11.x
 
-## Learning Laravel
+## 📦 Instalación
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### Prerrequisitos
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- PHP 8.2 o superior
+- Composer
+- Extensiones PHP requeridas: `pdo_sqlite`, `sqlite3`, `fileinfo`
 
-## Laravel Sponsors
+### Pasos de Instalación
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+# Clonar el repositorio
+git clone https://github.com/sebainzulza/proyecto-laravel-api.git
+cd proyecto-laravel-api/api-servidores
 
-### Premium Partners
+# Instalar dependencias
+composer install --ignore-platform-req=ext-fileinfo
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+# Copiar archivo de configuración
+cp .env.example .env
 
-## Contributing
+# Generar clave de aplicación
+php artisan key:generate
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# Ejecutar migraciones
+php artisan migrate
 
-## Code of Conduct
+# Iniciar servidor de desarrollo
+php artisan serve
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+La API estará disponible en `http://localhost:8000`
 
-## Security Vulnerabilities
+## 🚀 Endpoints de la API
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Base URL
+```
+http://localhost:8000/api
+```
 
-## License
+### 1. Listar Todos los Servidores
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+**GET** `/api/servers`
+
+**Respuesta Exitosa (200)**:
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "Production Server",
+      "ip_address": "192.168.1.100",
+      "status": true,
+      "created_at": "2025-12-02T18:00:00.000000Z",
+      "updated_at": "2025-12-02T18:00:00.000000Z"
+    }
+  ]
+}
+```
+
+### 2. Crear un Servidor
+
+**POST** `/api/servers`
+
+**Body**:
+```json
+{
+  "name": "Production Server",
+  "ip_address": "192.168.1.100",
+  "status": true
+}
+```
+
+**Validación**:
+- `name`: requerido, string, único, máximo 255 caracteres
+- `ip_address`: requerido, formato IPv4 válido
+- `status`: opcional, boolean (default: true)
+
+**Respuesta Exitosa (201)**:
+```json
+{
+  "data": {
+    "id": 1,
+    "name": "Production Server",
+    "ip_address": "192.168.1.100",
+    "status": true,
+    "created_at": "2025-12-02T18:00:00.000000Z",
+    "updated_at": "2025-12-02T18:00:00.000000Z"
+  },
+  "message": "Server created successfully"
+}
+```
+
+**Respuesta de Error (422)**:
+```json
+{
+  "message": "The name field is required. (and 1 more error)",
+  "errors": {
+    "name": ["The name field is required."],
+    "ip_address": ["The ip address field must be a valid IP address."]
+  }
+}
+```
+
+### 3. Obtener un Servidor Específico
+
+**GET** `/api/servers/{id}`
+
+**Respuesta Exitosa (200)**:
+```json
+{
+  "data": {
+    "id": 1,
+    "name": "Production Server",
+    "ip_address": "192.168.1.100",
+    "status": true,
+    "created_at": "2025-12-02T18:00:00.000000Z",
+    "updated_at": "2025-12-02T18:00:00.000000Z"
+  }
+}
+```
+
+**Respuesta de Error (404)**:
+```json
+{
+  "message": "Not Found"
+}
+```
+
+### 4. Actualizar un Servidor
+
+**PUT/PATCH** `/api/servers/{id}`
+
+**Body** (todos los campos son opcionales):
+```json
+{
+  "name": "Updated Server",
+  "ip_address": "192.168.1.200",
+  "status": false
+}
+```
+
+**Validación**:
+- `name`: opcional, string, único (excepto el registro actual), máximo 255 caracteres
+- `ip_address`: opcional, formato IPv4 válido
+- `status`: opcional, boolean
+
+**Respuesta Exitosa (200)**:
+```json
+{
+  "data": {
+    "id": 1,
+    "name": "Updated Server",
+    "ip_address": "192.168.1.200",
+    "status": false,
+    "created_at": "2025-12-02T18:00:00.000000Z",
+    "updated_at": "2025-12-02T18:05:00.000000Z"
+  },
+  "message": "Server updated successfully"
+}
+```
+
+### 5. Eliminar un Servidor
+
+**DELETE** `/api/servers/{id}`
+
+**Respuesta Exitosa (200)**:
+```json
+{
+  "message": "Server deleted successfully"
+}
+```
+
+**Respuesta de Error (404)**:
+```json
+{
+  "message": "Not Found"
+}
+```
+
+## 🧪 Pruebas
+
+El proyecto incluye pruebas automatizadas completas que cubren:
+- ✅ Listar servidores
+- ✅ Crear servidor exitosamente
+- ✅ Validación al crear (nombre requerido, IP válida, nombre único)
+- ✅ Obtener servidor específico
+- ✅ Error 404 al buscar servidor inexistente
+- ✅ Actualizar servidor
+- ✅ Eliminar servidor
+- ✅ Error 404 al eliminar servidor inexistente
+
+### Ejecutar las Pruebas
+
+```bash
+# Ejecutar todas las pruebas
+php artisan test
+
+# Ejecutar solo las pruebas de la API de servidores
+php artisan test --filter ServerApiTest
+
+# Ejecutar con cobertura
+php artisan test --coverage
+```
+
+## 📂 Estructura del Proyecto
+
+```
+api-servidores/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   └── Api/
+│   │   │       └── ServerController.php    # Controlador de la API
+│   │   └── Requests/
+│   │       ├── StoreServerRequest.php      # Validación para crear
+│   │       └── UpdateServerRequest.php     # Validación para actualizar
+│   └── Models/
+│       └── Server.php                      # Modelo Eloquent
+├── database/
+│   ├── factories/
+│   │   └── ServerFactory.php               # Factory para testing
+│   └── migrations/
+│       └── 2025_12_02_*_create_servers_table.php
+├── routes/
+│   └── api.php                             # Rutas de la API
+├── tests/
+│   └── Feature/
+│       └── ServerApiTest.php               # Tests de la API
+└── README.md
+```
+
+## 🗄️ Esquema de Base de Datos
+
+### Tabla: `servers`
+
+| Columna      | Tipo         | Descripción                      |
+|--------------|--------------|----------------------------------|
+| id           | BIGINT       | ID autoincremental (PK)          |
+| name         | VARCHAR(255) | Nombre del servidor (único)      |
+| ip_address   | VARCHAR(255) | Dirección IPv4                   |
+| status       | BOOLEAN      | Estado activo/inactivo (default: true) |
+| created_at   | TIMESTAMP    | Fecha de creación                |
+| updated_at   | TIMESTAMP    | Fecha de última actualización    |
+
+## 🔧 Configuración Adicional
+
+### Variables de Entorno (.env)
+
+```env
+APP_NAME="Server Inventory API"
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://localhost
+
+DB_CONNECTION=sqlite
+# Para SQLite en producción:
+# DB_DATABASE=/path/to/database.sqlite
+
+# Para MySQL:
+# DB_CONNECTION=mysql
+# DB_HOST=127.0.0.1
+# DB_PORT=3306
+# DB_DATABASE=servers_api
+# DB_USERNAME=root
+# DB_PASSWORD=
+```
+
+## 📝 Notas Técnicas
+
+### Tipado Estricto
+Todo el código implementa `declare(strict_types=1)` y utiliza type hints en:
+- Parámetros de funciones
+- Valores de retorno
+- Propiedades de clase (cuando es aplicable)
+
+### Validación Separada
+La lógica de validación está separada del controlador usando Form Requests:
+- `StoreServerRequest`: Validación para crear servidores
+- `UpdateServerRequest`: Validación para actualizar servidores
+
+### Códigos de Estado HTTP
+- **200 OK**: Operación exitosa (GET, PUT, DELETE)
+- **201 Created**: Recurso creado exitosamente (POST)
+- **404 Not Found**: Recurso no encontrado
+- **422 Unprocessable Entity**: Error de validación
+
+## 🔜 Próximos Pasos
+
+Para el proyecto completo se implementará:
+- [ ] Análisis estático con PHPStan/Larastan
+- [ ] Integración con SonarQube
+- [ ] Pipeline CI/CD con GitHub Actions
+- [ ] Dockerización de la aplicación
+- [ ] Despliegue automatizado con Ansible
+
+## 👥 Autor
+
+**Sebastián Inzulza**
+- GitHub: [@sebainzulza](https://github.com/sebainzulza)
+
+## 📄 Licencia
+
+Este proyecto es parte de un trabajo universitario y está disponible bajo la licencia MIT.

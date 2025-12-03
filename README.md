@@ -18,7 +18,7 @@ API RESTful desarrollada con Laravel para gestionar un inventario de servidores.
 
 ## 🛠️ Tecnologías
 
-- **Framework**: Laravel 12.x
+- **Framework**: Laravel 12
 - **PHP**: 8.2+
 - **Base de Datos**: SQLite (testing), compatible con MySQL/PostgreSQL
 - **Testing**: PHPUnit 11.x

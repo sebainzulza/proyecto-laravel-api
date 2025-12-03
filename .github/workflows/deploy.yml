@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/laravel-api
+  DOCKER_IMAGE: sebainzulza/laravel-api
 
 jobs:
   ci:

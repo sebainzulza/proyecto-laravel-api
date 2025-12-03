@@ -100,7 +100,10 @@ jobs:
 
       - name: Setear tag de imagen para deployment
         id: set_tag
-        run: echo "image_tag=${{ env.DOCKER_IMAGE }}:latest" >> $GITHUB_OUTPUT
+        run: |
+          IMAGE_WITH_TAG="${{ env.DOCKER_IMAGE }}:latest"
+          echo "image_tag=${IMAGE_WITH_TAG}" >> $GITHUB_OUTPUT
+          echo "Tag generado: ${IMAGE_WITH_TAG}"
 
   cd:
     name: Despliegue Continuo
@@ -108,6 +111,9 @@ jobs:
     needs: build
     
     steps:
+      - name: Debug - Verificar image_tag
+        run: echo "Image tag recibido - ${{ needs.build.outputs.image_tag }}"
+      
       - name: Checkout repositorio de Infraestructura
         uses: actions/checkout@v3
         with:

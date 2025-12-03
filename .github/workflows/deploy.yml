@@ -110,7 +110,7 @@ jobs:
       - name: Checkout repositorio de Infraestructura
         uses: actions/checkout@v3
         with:
-          repository: ${{ github.repository_owner }}/proyecto-infraestructura
+          repository: sebainzulza/proyecto-infraestructura
           token: ${{ secrets.GITHUB_TOKEN }}
           path: infraestructura
 
@@ -124,18 +124,34 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Instalar Ansible
+      - name: Instalar Ansible y colecciones
         run: |
           sudo apt-get update
           sudo apt-get install -y ansible
+          ansible-galaxy collection install community.docker
 
-      - name: Ejecutar playbook de despliegue
+      - name: Crear inventario dinámico de Ansible
+        working-directory: infraestructura
+        run: |
+          mkdir -p ansible/inventory
+          cat > ansible/inventory/hosts.yml <<EOF
+          all:
+            hosts:
+              ec2_instance:
+                ansible_host: ${{ secrets.SSH_HOST }}
+                ansible_user: ubuntu
+                ansible_python_interpreter: /usr/bin/python3
+                ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+          EOF
+
+      - name: Ejecutar playbook de despliegue con Ansible
         working-directory: infraestructura
         env:
           ANSIBLE_HOST_KEY_CHECKING: False
-          IMAGE_TAG: ${{ needs.build.outputs.image_tag }}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
           ansible-playbook -i ansible/inventory/hosts.yml ansible/playbooks/deploy.yml \
-            --extra-vars "target_host=${{ secrets.SSH_HOST }} image_tag=${IMAGE_TAG}"
+            --extra-vars "target_host=ec2_instance image_tag=${{ needs.build.outputs.image_tag }}" \
+            -v

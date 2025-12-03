@@ -16,8 +16,6 @@ jobs:
     steps:
       - name: Checkout código
         uses: actions/checkout@v3
-        with:
-          path: api-servidores
 
       - name: Configurar PHP 8.2
         uses: shivammathur/setup-php@v2
@@ -27,21 +25,17 @@ jobs:
           coverage: none
 
       - name: Instalar dependencias con Composer
-        working-directory: api-servidores
         run: composer install --prefer-dist --no-progress --no-interaction
 
       - name: Preparar entorno Laravel
-        working-directory: api-servidores
         run: |
           cp .env.example .env
           php artisan key:generate
 
       - name: Ejecutar pruebas PHPUnit
-        working-directory: api-servidores
         run: php artisan test --stop-on-failure
 
       - name: Ejecutar análisis estático PHPStan
-        working-directory: api-servidores
         run: vendor/bin/phpstan analyse --memory-limit=512M --error-format=github
 
   build:
@@ -75,8 +69,8 @@ jobs:
       - name: Construir imagen Docker
         uses: docker/build-push-action@v4
         with:
-          context: ./api-servidores
-          file: ./api-servidores/Dockerfile
+          context: .
+          file: ./Dockerfile
           push: false
           load: true
           tags: ${{ steps.meta.outputs.tags }}
@@ -101,8 +95,8 @@ jobs:
       - name: Push de imagen a Docker Hub
         uses: docker/build-push-action@v4
         with:
-          context: ./api-servidores
-          file: ./api-servidores/Dockerfile
+          context: .
+          file: ./Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha

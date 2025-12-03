@@ -155,7 +155,9 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          IMAGE_TAG: sebainzulza/laravel-api:latest
         run: |
+          echo "Usando image tag: ${IMAGE_TAG}"
           ansible-playbook -i ansible/inventory/hosts.yml ansible/playbooks/deploy.yml \
-            --extra-vars "target_host=ec2_instance image_tag=${{ needs.build.outputs.image_tag }}" \
+            --extra-vars "target_host=ec2_instance image_tag=${IMAGE_TAG}" \
             -v

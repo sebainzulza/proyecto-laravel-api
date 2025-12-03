@@ -1,13 +1,18 @@
-# API de Inventario de Servidores
+# API de Inventario de Servidores - Proyecto Final
 
-API RESTful desarrollada con Laravel para gestionar un inventario de servidores. Este proyecto implementa operaciones CRUD completas con validación robusta, tipado estricto y pruebas automatizadas.
+> **Proyecto Universitario**: Desarrollo de API RESTful con CI/CD Automatizado
+
+API RESTful desarrollada con Laravel para gestionar un inventario de servidores. Este proyecto implementa operaciones CRUD completas con validación robusta, tipado estricto, pruebas automatizadas y análisis de calidad de código.
 
 ## 📋 Características
 
 - ✅ API RESTful con operaciones CRUD completas
 - ✅ Validación de datos con Form Requests separados
-- ✅ Tipado estricto en todo el código (strict_types=1)
+- ✅ Tipado estricto en todo el código (`declare(strict_types=1)`)
 - ✅ Pruebas automatizadas con PHPUnit (100% cobertura de endpoints)
+- ✅ Análisis estático con PHPStan/Larastan (Nivel 5)
+- ✅ Integración con SonarQube para métricas de calidad
+- ✅ Dockerización completa (PHP-FPM + Nginx + MySQL)
 - ✅ Respuestas JSON con códigos HTTP apropiados
 - ✅ Patrón MVC de Laravel
 
@@ -29,23 +34,42 @@ API RESTful desarrollada con Laravel para gestionar un inventario de servidores.
 ### Pasos de Instalación
 
 ```bash
-# Clonar el repositorio
+# 1. Clonar el repositorio
 git clone https://github.com/sebainzulza/proyecto-laravel-api.git
 cd proyecto-laravel-api/api-servidores
 
-# Instalar dependencias
-composer install --ignore-platform-req=ext-fileinfo
+# 2. Instalar dependencias de producción
+composer install --no-dev --optimize-autoloader
 
-# Copiar archivo de configuración
+# 3. Instalar dependencias de desarrollo (para testing y análisis)
+composer install
+
+# 4. Copiar y configurar el archivo de entorno
 cp .env.example .env
 
-# Generar clave de aplicación
+# 5. Generar clave de aplicación
 php artisan key:generate
 
-# Ejecutar migraciones
+# 6. Configurar base de datos en .env
+# Para SQLite (desarrollo):
+# DB_CONNECTION=sqlite
+# DB_DATABASE=/ruta/completa/database.sqlite
+
+# Para MySQL (producción):
+# DB_CONNECTION=mysql
+# DB_HOST=127.0.0.1
+# DB_PORT=3306
+# DB_DATABASE=servers_api
+# DB_USERNAME=tu_usuario
+# DB_PASSWORD=tu_contraseña
+
+# 7. Ejecutar migraciones
 php artisan migrate
 
-# Iniciar servidor de desarrollo
+# 8. (Opcional) Crear datos de prueba
+php artisan db:seed
+
+# 9. Iniciar servidor de desarrollo
 php artisan serve
 ```
 
@@ -198,7 +222,9 @@ http://localhost:8000/api
 }
 ```
 
-## 🧪 Pruebas
+## 🧪 Pruebas y Calidad de Código
+
+### Pruebas Automatizadas
 
 El proyecto incluye pruebas automatizadas completas que cubren:
 - ✅ Listar servidores
@@ -210,7 +236,7 @@ El proyecto incluye pruebas automatizadas completas que cubren:
 - ✅ Eliminar servidor
 - ✅ Error 404 al eliminar servidor inexistente
 
-### Ejecutar las Pruebas
+**Ejecutar las Pruebas:**
 
 ```bash
 # Ejecutar todas las pruebas
@@ -219,9 +245,72 @@ php artisan test
 # Ejecutar solo las pruebas de la API de servidores
 php artisan test --filter ServerApiTest
 
-# Ejecutar con cobertura
+# Ejecutar con cobertura detallada
 php artisan test --coverage
+
+# Ejecutar con reporte HTML de cobertura
+php artisan test --coverage-html coverage
 ```
+
+**Resultados esperados:**
+- ✅ 10 pruebas pasadas
+- ✅ 52 assertions exitosas
+- ✅ 100% de cobertura de endpoints
+
+### Análisis Estático de Código
+
+El proyecto utiliza **PHPStan** con la extensión **Larastan** configurado en **nivel 5**.
+
+**Instalar herramientas de análisis:**
+
+```bash
+composer require --dev phpstan/phpstan nunomaduro/larastan
+```
+
+**Ejecutar análisis estático:**
+
+```bash
+# Ejecutar PHPStan
+vendor/bin/phpstan analyse
+
+# Ejecutar con nivel específico
+vendor/bin/phpstan analyse --level=5
+
+# Generar reporte detallado
+vendor/bin/phpstan analyse --error-format=table
+```
+
+**Configuración:** El archivo `phpstan.neon` está configurado para analizar:
+- ✅ Directorio `app/`
+- ✅ Directorio `config/`
+- ✅ Directorio `database/`
+- ✅ Directorio `routes/`
+
+### Análisis de Calidad con SonarQube
+
+El proyecto incluye configuración para SonarQube.
+
+**Ejecutar análisis:**
+
+```bash
+# Con SonarScanner instalado localmente
+sonar-scanner
+
+# Con Docker
+docker run --rm \
+  -e SONAR_HOST_URL="http://localhost:9000" \
+  -e SONAR_LOGIN="tu-token" \
+  -v "$(pwd):/usr/src" \
+  sonarsource/sonar-scanner-cli
+```
+
+**Métricas evaluadas:**
+- Duplicación de código
+- Complejidad ciclomática
+- Deuda técnica
+- Code smells
+- Bugs potenciales
+- Vulnerabilidades de seguridad
 
 ## 📂 Estructura del Proyecto
 
@@ -305,19 +394,93 @@ La lógica de validación está separada del controlador usando Form Requests:
 - **404 Not Found**: Recurso no encontrado
 - **422 Unprocessable Entity**: Error de validación
 
-## 🔜 Próximos Pasos
+## 🚀 Tabla de Endpoints API
 
-Para el proyecto completo se implementará:
-- [ ] Análisis estático con PHPStan/Larastan
-- [ ] Integración con SonarQube
-- [ ] Pipeline CI/CD con GitHub Actions
-- [ ] Dockerización de la aplicación
+| Verbo HTTP | Ruta                  | Descripción                          | Código Éxito |
+|------------|-----------------------|--------------------------------------|--------------|
+| GET        | `/api/servers`        | Listar todos los servidores          | 200          |
+| POST       | `/api/servers`        | Crear un nuevo servidor              | 201          |
+| GET        | `/api/servers/{id}`   | Obtener un servidor específico       | 200          |
+| PUT/PATCH  | `/api/servers/{id}`   | Actualizar un servidor existente     | 200          |
+| DELETE     | `/api/servers/{id}`   | Eliminar un servidor                 | 200          |
+
+**Códigos de Error:**
+- `404` - Servidor no encontrado
+- `422` - Error de validación
+
+## 🐳 Despliegue con Docker
+
+La configuración de infraestructura y despliegue se encuentra en un repositorio separado:
+
+**🔗 https://github.com/sebainzulza/proyecto-infraestructura**
+
+### ¿Por qué repositorios separados?
+
+- **Separación de responsabilidades**: Código de aplicación vs configuración de infraestructura
+- **Seguridad**: Variables sensibles y secretos no están en el código fuente
+- **Despliegue independiente**: Cambios en infraestructura no afectan el versionado de la app
+- **Control de acceso**: Diferentes permisos para desarrolladores y DevOps
+
+### Contenido del Repositorio de Infraestructura
+
+- `docker-compose.yml` - Orquestación de contenedores
+- `docker/nginx/` - Configuración de Nginx
+- `environments/` - Variables de entorno por ambiente
+- `ansible/` - Playbooks de automatización (próximamente)
+- `.github/workflows/` - Pipelines CI/CD (próximamente)
+
+### Desarrollo Local con Docker
+
+Este repositorio incluye un `Dockerfile` para construir la imagen de la aplicación.
+
+Para desplegar localmente, clona el repositorio de infraestructura y sigue las instrucciones del README.
+
+## 🔄 CI/CD Pipeline
+
+El proyecto está preparado para integración continua con:
+- **GitHub Actions** (pipeline en repositorio de infraestructura)
+- **GitLab CI** (alternativa)
+- Ejecución automática de:
+  - ✅ Pruebas unitarias
+  - ✅ Análisis estático (PHPStan)
+  - ✅ Análisis de calidad (SonarQube)
+  - ✅ Build de imagen Docker
+  - ✅ Push a Container Registry
+  - ✅ Despliegue automatizado con Ansible
+
+## 📚 Documentación Adicional
+
+- [API_EXAMPLES.md](API_EXAMPLES.md) - Ejemplos prácticos de uso de la API
+- [PROJECT_SUMMARY.md](PROJECT_SUMMARY.md) - Resumen técnico del proyecto
+- [REPOSITORY_SEPARATION_GUIDE.md](REPOSITORY_SEPARATION_GUIDE.md) - Guía de separación de repositorios
+- [Repositorio de Infraestructura](https://github.com/sebainzulza/proyecto-infraestructura) - Docker, CI/CD y despliegue
+
+## 🎓 Proyecto Universitario
+
+Este proyecto cumple con los siguientes requisitos académicos:
+
+### Fase 1: Desarrollo y Estructura Base ✅
+- [x] API RESTful funcional con operaciones CRUD
+- [x] Patrón MVC correctamente aplicado
+- [x] Código limpio y organizado
+- [x] Pruebas unitarias/funcionales con PHPUnit
+- [x] Análisis estático con PHPStan/Larastan
+- [x] Integración con SonarQube
+- [x] Documentación completa (README.md)
+
+### Fase 2: CI/CD y Despliegue (En repositorio de infraestructura)
+- [ ] Pipeline de CI/CD con GitHub Actions/GitLab CI
+- [ ] Build automatizado de imágenes Docker
+- [ ] Push a Container Registry
 - [ ] Despliegue automatizado con Ansible
+- [ ] Configuración de VM en cloud (AWS/Azure/GCP)
 
 ## 👥 Autor
 
 **Sebastián Inzulza**
 - GitHub: [@sebainzulza](https://github.com/sebainzulza)
+- Proyecto: Desarrollo de API Laravel con CI/CD Automatizado
+- Universidad: Proyecto Final
 
 ## 📄 Licencia
 

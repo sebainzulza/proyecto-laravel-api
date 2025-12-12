@@ -35,4 +35,4 @@ Content-Type: application/json
 }
 
 ### Eliminar un servidor
-DELETE http://52.71.57.128:8080/api/servers/7
+DELETE http://52.71.57.128:8080/api/servers/8

@@ -13,7 +13,7 @@ use Illuminate\Http\JsonResponse;
 class ServerController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Listar todos los servidores.
      */
     public function index(): JsonResponse
     {
@@ -21,11 +21,12 @@ class ServerController extends Controller
 
         return response()->json([
             'data' => $servers,
+            'total' => $servers->count(),
         ], 200);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Crear un nuevo servidor.
      */
     public function store(StoreServerRequest $request): JsonResponse
     {
@@ -38,7 +39,7 @@ class ServerController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Mostrar un servidor específico.
      */
     public function show(Server $server): JsonResponse
     {
@@ -48,7 +49,7 @@ class ServerController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualizar un servidor existente.
      */
     public function update(UpdateServerRequest $request, Server $server): JsonResponse
     {
@@ -61,7 +62,7 @@ class ServerController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Eliminar un servidor.
      */
     public function destroy(Server $server): JsonResponse
     {

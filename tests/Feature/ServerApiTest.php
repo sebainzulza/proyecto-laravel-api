@@ -54,7 +54,7 @@ class ServerApiTest extends TestCase
                     'ip_address' => '192.168.1.100',
                     'status' => true,
                 ],
-                'message' => 'Server created successfully',
+                'message' => 'Servidor creado exitosamente',
             ]);
 
         $this->assertDatabaseHas('servers', [
@@ -161,7 +161,7 @@ class ServerApiTest extends TestCase
                     'name' => 'Updated Server',
                     'ip_address' => '192.168.1.200',
                 ],
-                'message' => 'Server updated successfully',
+                'message' => 'Servidor actualizado exitosamente',
             ]);
 
         $this->assertDatabaseHas('servers', [
@@ -182,7 +182,7 @@ class ServerApiTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson([
-                'message' => 'Server deleted successfully',
+                'message' => 'Servidor eliminado exitosamente',
             ]);
 
         $this->assertDatabaseMissing('servers', [

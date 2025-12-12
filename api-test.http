@@ -1,0 +1,38 @@
+### Listar todos los servidores
+GET http://52.71.57.128:8080/api/servers
+
+### Crear un servidor
+POST http://52.71.57.128:8080/api/servers
+Content-Type: application/json
+
+{
+    "name": "Servidor Web Principal",
+    "ip_address": "192.168.1.10",
+    "status": true
+}
+
+### Crear otro servidor
+POST http://52.71.57.128:8080/api/servers
+Content-Type: application/json
+
+{
+    "name": "Base de Datos MySQL",
+    "ip_address": "192.168.1.20",
+    "status": false
+}
+
+### Ver un servidor específico (cambiar {id} por el ID real)
+GET http://52.71.57.128:8080/api/servers/1
+
+### Actualizar un servidor
+PUT http://52.71.57.128:8080/api/servers/1
+Content-Type: application/json
+
+{
+    "name": "Servidor Web Actualizado",
+    "ip_address": "192.168.1.15",
+    "status": true
+}
+
+### Eliminar un servidor
+DELETE http://52.71.57.128:8080/api/servers/7

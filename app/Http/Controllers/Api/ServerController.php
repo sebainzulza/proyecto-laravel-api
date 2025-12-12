@@ -33,7 +33,7 @@ class ServerController extends Controller
 
         return response()->json([
             'data' => $server,
-            'message' => 'Server created successfully',
+            'message' => 'Servidor creado exitosamente',
         ], 201);
     }
 
@@ -56,7 +56,7 @@ class ServerController extends Controller
 
         return response()->json([
             'data' => $server,
-            'message' => 'Server updated successfully',
+            'message' => 'Servidor actualizado exitosamente',
         ], 200);
     }
 
@@ -68,7 +68,7 @@ class ServerController extends Controller
         $server->delete();
 
         return response()->json([
-            'message' => 'Server deleted successfully',
+            'message' => 'Servidor eliminado exitosamente',
         ], 200);
     }
 }

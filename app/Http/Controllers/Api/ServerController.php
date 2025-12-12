@@ -22,7 +22,7 @@ class ServerController extends Controller
         return response()->json([
             'data' => $servers,
             'total' => $servers->count(),
-            'version' => 'v2.0',
+            'version' => 'v2.1',
         ], 200);
     }
 
